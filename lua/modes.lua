@@ -132,7 +132,12 @@ end
 
 H.reset = function()
 	H.highlight('default')
-	vim.cmd.redraw()
+	-- local patch: defer the redraw. telescope's previewer temporarily switches
+	-- to normal mode while the prompt is in insert mode; a synchronous redraw
+	-- here bakes in the normal-mode cursor position (insert cursor shifts left).
+	vim.schedule(function()
+		vim.cmd.redraw()
+	end)
 end
 
 H.restore = function()
